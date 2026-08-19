@@ -7,23 +7,20 @@ export default function Navbar() {
   const isCreateActive = location.pathname === '/' || location.pathname === '/create'
 
   return (
-    <header className="sticky top-0 z-50 apple-glass border-b border-apple-border/70">
+    <header className="sticky top-0 z-50 bg-white border-b border-apple-border/70 shadow-sm">
       <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Brand Header */}
         <div className="flex items-center justify-between h-14">
           <Link
             to="/"
-            className="flex items-center gap-2.5 group transition-opacity hover:opacity-85"
+            className="flex items-center gap-2.5 group opacity-100"
           >
-            <div className="w-8 h-8 rounded-apple-sm bg-apple-ink flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
+            <div className="w-9 h-9 rounded-apple-sm bg-apple-ink flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105 opacity-100">
               <TbCards className="w-5 h-5 text-white" />
             </div>
-            <div className="flex items-baseline gap-1.5">
+            <div className="flex items-baseline gap-1.5 opacity-100">
               <span className="font-display text-lg font-semibold tracking-tight text-apple-ink">
-                Flashcard
-              </span>
-              <span className="text-xs font-medium text-apple-muted tracking-normal">
-                Generator
+                Flashcard Generator
               </span>
             </div>
           </Link>
