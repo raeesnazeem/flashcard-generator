@@ -1,12 +1,22 @@
-function App() {
+import React from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Layout from './components/Layout'
+import CreateFlashcard from './pages/CreateFlashcard'
+import MyFlashcards from './pages/MyFlashcards'
+import FlashcardDetails from './pages/FlashcardDetails'
+
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md text-center max-w-md">
-        <h1 className="text-3xl font-bold text-red-600 mb-2">Flashcard Generator</h1>
-        <p className="text-gray-600">Step 1: Scaffolding & Setup complete.</p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<CreateFlashcard />} />
+          <Route path="/create" element={<Navigate to="/" replace />} />
+          <Route path="/my-flashcards" element={<MyFlashcards />} />
+          <Route path="/flashcard/:id" element={<FlashcardDetails />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
