@@ -1,76 +1,73 @@
 import React from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { TbCards } from 'react-icons/tb'
+import { FiPlus, FiGrid } from 'react-icons/fi'
 
 export default function Navbar() {
-  const location = useLocation()
-  const isCreateActive = location.pathname === '/' || location.pathname === '/create'
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-apple-border/70 shadow-sm">
-      <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Brand Header */}
-        <div className="flex items-center justify-between h-14">
-          <Link
-            to="/"
-            className="flex items-center gap-2.5 group opacity-100"
-          >
-            <div className="w-9 h-9 rounded-apple-sm bg-apple-ink flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105 opacity-100">
-              <TbCards className="w-5 h-5 text-white" />
+    <header className="bg-canvas-dark border-b border-hairline-dark text-white sticky top-0 z-50">
+      {/* Top Brand & Global Navigation Bar */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Brand Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative w-8 h-8 rounded-sm bg-gradient-to-tr from-brand-orange via-brand-magenta to-brand-periwinkle p-[1px]">
+              <div className="w-full h-full bg-canvas-dark rounded-[3px] flex items-center justify-center transition-transform group-hover:scale-95">
+                <TbCards className="w-4 h-4 text-white" />
+              </div>
             </div>
-            <div className="flex items-baseline gap-1.5 opacity-100">
-              <span className="font-display text-lg font-semibold tracking-tight text-apple-ink">
-                Flashcard Generator
+            <div className="flex flex-col">
+              <span className="font-sans text-sm font-semibold tracking-tight text-white flex items-center gap-2">
+                Flashcard Platform
+                <span className="font-mono text-[10px] uppercase tracking-wider text-brand-mint bg-surface-dark-soft px-1.5 py-0.5 rounded-xs border border-hairline-dark">
+                  v2.0
+                </span>
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-ink-muted hidden sm:inline-block">
+                STUDY &bull; MEMORIZE &bull; REPEAT
               </span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
-            <span className="text-apple-xs text-apple-muted hidden sm:inline-block">
-              Study Smarter
-            </span>
-          </div>
-        </div>
-
-        {/* Page Section & Navigation Bar */}
-        <div className="pt-2 pb-0 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-apple-ink">
-              {isCreateActive ? 'Create Flashcard' : 'Flashcard Library'}
-            </h1>
-          </div>
-
-          <nav className="flex space-x-6 border-b border-apple-border/50 sm:border-b-0" aria-label="Tabs">
+          {/* Navigation Links */}
+          <nav className="flex items-center space-x-1 sm:space-x-2" aria-label="Main Navigation">
             <NavLink
               to="/"
               end
               className={({ isActive }) =>
-                `pb-2.5 pt-1 px-1 border-b-2 font-sans font-medium text-sm transition-all duration-200 inline-block ${
+                `font-mono text-xs uppercase tracking-wider px-3.5 py-2 rounded-sm transition-all duration-150 flex items-center gap-2 ${
                   isActive
-                    ? 'border-apple-blue text-apple-blue font-semibold'
-                    : 'border-transparent text-apple-muted hover:text-apple-ink hover:border-apple-border'
+                    ? 'bg-surface-dark-soft text-white border border-hairline-dark shadow-sm'
+                    : 'text-ink-muted hover:text-white hover:bg-surface-dark-soft/50 border border-transparent'
                 }`
               }
             >
-              Create New
+              <FiPlus className="w-3.5 h-3.5" />
+              <span>Create Deck</span>
             </NavLink>
 
             <NavLink
               to="/my-flashcards"
               className={({ isActive }) =>
-                `pb-2.5 pt-1 px-1 border-b-2 font-sans font-medium text-sm transition-all duration-200 inline-block ${
+                `font-mono text-xs uppercase tracking-wider px-3.5 py-2 rounded-sm transition-all duration-150 flex items-center gap-2 ${
                   isActive
-                    ? 'border-apple-blue text-apple-blue font-semibold'
-                    : 'border-transparent text-apple-muted hover:text-apple-ink hover:border-apple-border'
+                    ? 'bg-surface-dark-soft text-white border border-hairline-dark shadow-sm'
+                    : 'text-ink-muted hover:text-white hover:bg-surface-dark-soft/50 border border-transparent'
                 }`
               }
             >
-              My Flashcards
+              <FiGrid className="w-3.5 h-3.5" />
+              <span>My Flashcards</span>
             </NavLink>
           </nav>
         </div>
       </div>
+
+      {/* Decorative gradient*/}
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-brand-magenta/40 to-transparent" />
     </header>
   )
 }
+
 

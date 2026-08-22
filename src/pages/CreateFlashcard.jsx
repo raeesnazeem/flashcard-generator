@@ -10,12 +10,11 @@ import {
   FiPlus,
   FiImage,
   FiX,
-  FiCheckCircle,
+  FiCheck,
   FiAlertCircle
 } from 'react-icons/fi'
 import { addFlashcard } from '../redux/flashcardSlice'
 
-// Validation schema for creating a flashcard deck
 const FlashcardValidationSchema = Yup.object().shape({
   groupName: Yup.string()
     .trim()
@@ -47,7 +46,6 @@ const FlashcardValidationSchema = Yup.object().shape({
     .min(1, 'At least one flashcard term is required')
 })
 
-// Initial empty form state
 const createInitialTerm = () => ({
   id: `term-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
   term: '',
@@ -68,13 +66,10 @@ export default function CreateFlashcard() {
   const [successToast, setSuccessToast] = useState(false)
   const [imageError, setImageError] = useState(null)
 
-  // Array of input refs to programmatically focus term title fields on edit click
   const termTitleRefs = useRef([])
 
-  // Helper to convert uploaded image file to Base64 string for local persistence
   const handleImageFile = (file, callback) => {
     setImageError(null)
-
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
@@ -82,23 +77,17 @@ export default function CreateFlashcard() {
       return
     }
 
-    // Limit image size to 1.5MB to maintain smooth localStorage performance
     if (file.size > 1.5 * 1024 * 1024) {
-      setImageError('Image size exceeds 1.5MB. Please choose a smaller image.')
+      setImageError('Image size exceeds 1.5MB. Please select a smaller file.')
       return
     }
 
     const reader = new FileReader()
-    reader.onload = () => {
-      callback(reader.result)
-    }
-    reader.onerror = () => {
-      setImageError('Failed to read image file.')
-    }
+    reader.onload = () => callback(reader.result)
+    reader.onerror = () => setImageError('Failed to process image file.')
     reader.readAsDataURL(file)
   }
 
-  // Handle form submission
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     const newDeck = {
       id: `deck-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
@@ -114,34 +103,52 @@ export default function CreateFlashcard() {
       }))
     }
 
-    // Save to Redux (auto-synced to LocalStorage via store subscriber)
     dispatch(addFlashcard(newDeck))
     setSubmitting(false)
     resetForm()
     setSuccessToast(true)
 
-    // Redirect to library after short feedback delay
     setTimeout(() => {
       navigate('/my-flashcards')
-    }, 1200)
+    }, 1100)
   }
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
-      {/* Toast Notification */}
+      {/* Header */}
+      <div className="border-b border-hairline pb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="badge-mono">01 // CREATION</span>
+          <span className="font-mono text-xs text-ink-muted uppercase tracking-wider">
+            Deck Constructor
+          </span>
+        </div>
+        <h1 className="font-sans text-2xl sm:text-3xl font-medium tracking-tight text-ink">
+          Create Flashcard Deck
+        </h1>
+        <p className="text-sm text-ink-secondary mt-1">
+          Set up a structured vocabulary, concept, or formula deck with definitions and visual assets.
+        </p>
+      </div>
+
+      {/* Success Notification */}
       {successToast && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 bg-white border border-apple-success/40 text-apple-ink px-4 py-3 rounded-apple-md shadow-apple-raised animate-bounce">
-          <FiCheckCircle className="w-5 h-5 text-apple-success flex-shrink-0" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 bg-canvas border border-ink text-ink px-4 py-3 rounded-sm shadow-soft-drop animate-fade-in">
+          <div className="w-5 h-5 rounded-xs bg-brand-mint flex items-center justify-center text-ink flex-shrink-0">
+            <FiCheck className="w-3.5 h-3.5 stroke-[3]" />
+          </div>
           <div>
-            <p className="text-sm font-semibold">Deck Created Successfully!</p>
-            <p className="text-xs text-apple-muted">Redirecting to your library...</p>
+            <p className="font-mono text-xs font-semibold uppercase tracking-wider">
+              Deck Saved Successfully
+            </p>
+            <p className="text-xs text-ink-muted">Routing to library...</p>
           </div>
         </div>
       )}
 
-      {/* Global Image Warning if any */}
+      {/* Global Image Error Warning */}
       {imageError && (
-        <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-apple-md text-sm">
+        <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-sm text-xs font-mono">
           <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{imageError}</span>
           <button
@@ -160,49 +167,56 @@ export default function CreateFlashcard() {
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, setFieldValue, isSubmitting }) => (
-          <Form className="space-y-8">
-            {/* 1. Main Group Information Card */}
-            <div className="apple-card p-6 sm:p-8 bg-white space-y-6">
-              <div className="border-b border-apple-border/40 pb-4">
-                <h2 className="font-display text-xl sm:text-2xl font-semibold text-apple-ink">
-                  Create New Group
-                </h2>
-                <p className="text-xs sm:text-sm text-apple-muted mt-1">
-                  Define the deck category, title, description, and optional cover image.
-                </p>
+          <Form className="space-y-8" autoComplete="off">
+            {/* Section 1: Main Group Information Card */}
+            <div className="card-surface p-6 sm:p-8 space-y-6">
+              <div className="flex items-center justify-between border-b border-hairline pb-4">
+                <div>
+                  <h2 className="font-mono text-xs uppercase tracking-widest text-ink font-semibold">
+                    Group Details
+                  </h2>
+                  <p className="text-xs text-ink-muted mt-0.5">
+                    Define primary metadata and optional deck cover.
+                  </p>
+                </div>
+                <span className="badge-mono">STEP 1</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                 {/* Group Title Field */}
-                <div className="md:col-span-2 space-y-1.5">
+                <div className="md:col-span-2 space-y-2">
                   <label
                     htmlFor="groupName"
-                    className="block text-xs font-semibold uppercase tracking-wider text-apple-ink"
+                    className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
                   >
-                    Group Name <span className="text-apple-danger">*</span>
+                    Group Name <span className="text-brand-orange">*</span>
                   </label>
                   <Field
                     id="groupName"
                     name="groupName"
                     type="text"
-                    placeholder="e.g. Web Development Fundamentals"
-                    className={`apple-input ${
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    placeholder="e.g. Distributed Systems Architecture"
+                    className={`input-field font-sans ${
                       touched.groupName && errors.groupName
-                        ? 'border-apple-danger focus:border-apple-danger'
+                        ? 'border-red-500 focus:border-red-500'
                         : ''
                     }`}
                   />
                   <ErrorMessage
                     name="groupName"
                     component="div"
-                    className="text-xs text-apple-danger mt-1 flex items-center gap-1"
+                    className="font-mono text-[11px] text-red-600 mt-1"
                   />
                 </div>
 
                 {/* Group Cover Image Upload */}
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-apple-ink">
-                    Group Image <span className="text-apple-muted lowercase font-normal">(optional)</span>
+                <div className="space-y-2">
+                  <label className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium">
+                    Deck Cover <span className="text-ink-light lowercase font-normal">(optional)</span>
                   </label>
 
                   {values.groupImage ? (
@@ -210,22 +224,24 @@ export default function CreateFlashcard() {
                       <img
                         src={values.groupImage}
                         alt="Group cover"
-                        className="w-full h-24 object-cover rounded-apple-sm border border-apple-border"
+                        className="w-full h-24 object-cover rounded-sm border border-hairline"
                       />
                       <button
                         type="button"
                         onClick={() => setFieldValue('groupImage', null)}
-                        className="absolute top-1.5 right-1.5 bg-black/70 hover:bg-black text-white p-1 rounded-full shadow transition-transform hover:scale-110"
+                        className="absolute top-1.5 right-1.5 bg-ink text-white p-1 rounded-xs hover:bg-red-600 transition-colors"
                         title="Remove Image"
                       >
                         <FiX className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center h-24 px-4 border-2 border-dashed border-apple-border hover:border-apple-blue/60 rounded-apple-sm cursor-pointer bg-apple-surface/50 hover:bg-apple-blue/5 transition-colors">
-                      <FiUpload className="w-5 h-5 text-apple-muted mb-1" />
-                      <span className="text-xs font-medium text-apple-blue">Upload Image</span>
-                      <span className="text-[10px] text-apple-muted">Max 1.5MB</span>
+                    <label className="flex flex-col items-center justify-center h-24 px-4 border border-dashed border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas-soft hover:bg-canvas transition-colors">
+                      <FiUpload className="w-4 h-4 text-ink-muted mb-1" />
+                      <span className="font-mono text-[11px] uppercase tracking-wider text-ink">
+                        Upload Image
+                      </span>
+                      <span className="font-mono text-[10px] text-ink-light mt-0.5">MAX 1.5MB</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -240,100 +256,107 @@ export default function CreateFlashcard() {
                 </div>
 
                 {/* Group Description Field */}
-                <div className="md:col-span-3 space-y-1.5">
+                <div className="md:col-span-3 space-y-2">
                   <label
                     htmlFor="groupDescription"
-                    className="block text-xs font-semibold uppercase tracking-wider text-apple-ink"
+                    className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
                   >
-                    Group Description <span className="text-apple-danger">*</span>
+                    Group Description <span className="text-brand-orange">*</span>
                   </label>
                   <Field
                     as="textarea"
                     id="groupDescription"
                     name="groupDescription"
                     rows="3"
-                    placeholder="Describe the topics covered in this flashcard deck..."
-                    className={`apple-input resize-none ${
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    placeholder="Describe the topics and key knowledge areas covered in this deck..."
+                    className={`input-field font-sans resize-none ${
                       touched.groupDescription && errors.groupDescription
-                        ? 'border-apple-danger focus:border-apple-danger'
+                        ? 'border-red-500 focus:border-red-500'
                         : ''
                     }`}
                   />
                   <ErrorMessage
                     name="groupDescription"
                     component="div"
-                    className="text-xs text-apple-danger mt-1 flex items-center gap-1"
+                    className="font-mono text-[11px] text-red-600 mt-1"
                   />
                 </div>
               </div>
             </div>
 
-            {/* 2. Dynamic Terms & Definitions Section */}
-            <div className="apple-card p-6 sm:p-8 bg-white space-y-6">
-              <div className="flex items-center justify-between border-b border-apple-border/40 pb-4">
+            {/* Dynamic Cards / Terms Section */}
+            <div className="card-surface p-6 sm:p-8 space-y-6">
+              <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div>
-                  <h2 className="font-display text-xl sm:text-2xl font-semibold text-apple-ink">
-                    Add Terms
+                  <h2 className="font-mono text-xs uppercase tracking-widest text-ink font-semibold">
+                    Cards & Definitions
                   </h2>
-                  <p className="text-xs sm:text-sm text-apple-muted mt-1">
-                    Enter key terms, their definitions, and optional illustrative images.
+                  <p className="text-xs text-ink-muted mt-0.5">
+                    Add terms, concise definitions, and optional diagrams.
                   </p>
                 </div>
-                <span className="apple-badge apple-badge-accent">
-                  {values.terms.length} {values.terms.length === 1 ? 'Term' : 'Terms'}
+                <span className="badge-mono badge-mint">
+                  {values.terms.length} {values.terms.length === 1 ? 'CARD' : 'CARDS'}
                 </span>
               </div>
 
               <FieldArray name="terms">
                 {({ push, remove }) => (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {values.terms.map((termItem, index) => (
                       <div
                         key={termItem.id || index}
-                        className="p-4 sm:p-5 rounded-apple-md bg-apple-surface/60 border border-apple-border/70 space-y-4 transition-all"
+                        className="p-4 sm:p-5 rounded-sm bg-canvas-soft border border-hairline space-y-4 transition-all"
                       >
-                        {/* Term Header / Row Number and Actions */}
-                        <div className="flex items-center justify-between">
-                          <span className="w-6 h-6 rounded-full bg-apple-ink text-white text-xs font-semibold flex items-center justify-center">
-                            {index + 1}
-                          </span>
-
+                        {/* Term Header Row */}
+                        <div className="flex items-center justify-between border-b border-hairline/60 pb-3">
                           <div className="flex items-center gap-2">
-                            {/* Edit Icon to Focus Title Input */}
+                            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-xs bg-ink text-white">
+                              {String(index + 1).padStart(2, '0')}
+                            </span>
+                            <span className="font-mono text-xs text-ink-muted uppercase tracking-wider">
+                              Flashcard Entry
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            {/* Focus Edit Button */}
                             <button
                               type="button"
-                              onClick={() => {
-                                termTitleRefs.current[index]?.focus()
-                              }}
-                              className="p-1.5 text-apple-muted hover:text-apple-blue rounded-full hover:bg-apple-border/50 transition-colors"
-                              title="Focus & Edit Term"
+                              onClick={() => termTitleRefs.current[index]?.focus()}
+                              className="p-1.5 text-ink-muted hover:text-ink rounded-xs hover:bg-hairline transition-colors"
+                              title="Focus Input"
                             >
-                              <FiEdit2 className="w-4 h-4" />
+                              <FiEdit2 className="w-3.5 h-3.5" />
                             </button>
 
-                            {/* Trash Icon to Remove Row */}
+                            {/* Trash Button */}
                             {values.terms.length > 1 && (
                               <button
                                 type="button"
                                 onClick={() => remove(index)}
-                                className="p-1.5 text-apple-muted hover:text-apple-danger rounded-full hover:bg-apple-border/50 transition-colors"
-                                title="Delete Term"
+                                className="p-1.5 text-ink-muted hover:text-red-600 rounded-xs hover:bg-red-50 transition-colors"
+                                title="Delete Card"
                               >
-                                <FiTrash2 className="w-4 h-4" />
+                                <FiTrash2 className="w-3.5 h-3.5" />
                               </button>
                             )}
                           </div>
                         </div>
 
-                        {/* Term Inputs Grid */}
+                        {/* Card Inputs Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-                          {/* Term Name Field */}
-                          <div className="md:col-span-4 space-y-1">
+                          {/* Term Field */}
+                          <div className="md:col-span-4 space-y-1.5">
                             <label
                               htmlFor={`terms.${index}.term`}
-                              className="block text-xs font-medium text-apple-ink"
+                              className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
                             >
-                              Enter Term <span className="text-apple-danger">*</span>
+                              Term <span className="text-brand-orange">*</span>
                             </label>
                             <input
                               type="text"
@@ -344,27 +367,31 @@ export default function CreateFlashcard() {
                               onChange={(e) =>
                                 setFieldValue(`terms[${index}].term`, e.target.value)
                               }
-                              placeholder="e.g. Closure"
-                              className={`apple-input text-sm ${
+                              autoComplete="off"
+                              autoCorrect="off"
+                              autoCapitalize="off"
+                              spellCheck="false"
+                              placeholder="e.g. CAP Theorem"
+                              className={`input-field font-sans ${
                                 touched.terms?.[index]?.term && errors.terms?.[index]?.term
-                                  ? 'border-apple-danger focus:border-apple-danger'
+                                  ? 'border-red-500 focus:border-red-500'
                                   : ''
                               }`}
                             />
                             {touched.terms?.[index]?.term && errors.terms?.[index]?.term && (
-                              <div className="text-xs text-apple-danger mt-0.5">
+                              <div className="font-mono text-[11px] text-red-600 mt-1">
                                 {errors.terms[index].term}
                               </div>
                             )}
                           </div>
 
-                          {/* Term Definition Field */}
-                          <div className="md:col-span-5 space-y-1">
+                          {/* Definition Field */}
+                          <div className="md:col-span-5 space-y-1.5">
                             <label
                               htmlFor={`terms.${index}.definition`}
-                              className="block text-xs font-medium text-apple-ink"
+                              className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
                             >
-                              Enter Definition <span className="text-apple-danger">*</span>
+                              Definition <span className="text-brand-orange">*</span>
                             </label>
                             <textarea
                               id={`terms.${index}.definition`}
@@ -374,48 +401,52 @@ export default function CreateFlashcard() {
                               onChange={(e) =>
                                 setFieldValue(`terms[${index}].definition`, e.target.value)
                               }
-                              placeholder="Write a concise definition..."
-                              className={`apple-input resize-none text-sm ${
+                              autoComplete="off"
+                              autoCorrect="off"
+                              autoCapitalize="off"
+                              spellCheck="false"
+                              placeholder="Write definition..."
+                              className={`input-field font-sans resize-none ${
                                 touched.terms?.[index]?.definition &&
                                 errors.terms?.[index]?.definition
-                                  ? 'border-apple-danger focus:border-apple-danger'
+                                  ? 'border-red-500 focus:border-red-500'
                                   : ''
                               }`}
                             />
                             {touched.terms?.[index]?.definition &&
                               errors.terms?.[index]?.definition && (
-                                <div className="text-xs text-apple-danger mt-0.5">
+                                <div className="font-mono text-[11px] text-red-600 mt-1">
                                   {errors.terms[index].definition}
                                 </div>
                               )}
                           </div>
 
-                          {/* Term Image Upload / Preview */}
-                          <div className="md:col-span-3 space-y-1">
-                            <label className="block text-xs font-medium text-apple-ink">
-                              Image <span className="text-apple-muted font-normal">(optional)</span>
+                          {/* Optional Card Image Upload */}
+                          <div className="md:col-span-3 space-y-1.5">
+                            <label className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium">
+                              Image <span className="text-ink-light lowercase font-normal">(optional)</span>
                             </label>
 
                             {termItem.image ? (
                               <div className="relative group inline-block w-full">
                                 <img
                                   src={termItem.image}
-                                  alt={`Term ${index + 1}`}
-                                  className="w-full h-14 object-cover rounded-apple-sm border border-apple-border"
+                                  alt={`Card ${index + 1}`}
+                                  className="w-full h-14 object-cover rounded-sm border border-hairline"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => setFieldValue(`terms[${index}].image`, null)}
-                                  className="absolute top-1 right-1 bg-black/70 hover:bg-black text-white p-0.5 rounded-full shadow"
+                                  className="absolute top-1 right-1 bg-ink text-white p-0.5 rounded-xs hover:bg-red-600 transition-colors"
                                   title="Remove image"
                                 >
                                   <FiX className="w-3 h-3" />
                                 </button>
                               </div>
                             ) : (
-                              <label className="flex items-center justify-center gap-2 h-10 px-3 border border-apple-border hover:border-apple-blue rounded-apple-sm cursor-pointer bg-white hover:bg-apple-blue/5 transition-colors text-xs text-apple-ink">
-                                <FiImage className="w-4 h-4 text-apple-blue" />
-                                <span className="font-medium">Select Image</span>
+                              <label className="flex items-center justify-center gap-2 h-10 px-3 border border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas hover:bg-canvas-soft transition-colors font-mono text-[11px] uppercase tracking-wider text-ink">
+                                <FiImage className="w-3.5 h-3.5 text-ink-muted" />
+                                <span>Attach Image</span>
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -434,15 +465,15 @@ export default function CreateFlashcard() {
                       </div>
                     ))}
 
-                    {/* Add More Term Button */}
+                    {/* Add More Cards Button */}
                     <div className="pt-2">
                       <button
                         type="button"
                         onClick={() => push(createInitialTerm())}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-apple-sm border border-dashed border-apple-blue text-apple-blue hover:bg-apple-blue/5 text-sm font-semibold transition-colors"
+                        className="btn-secondary-white border-dashed text-ink font-mono text-xs uppercase tracking-wider"
                       >
-                        <FiPlus className="w-4 h-4" />
-                        <span>+ Add More</span>
+                        <FiPlus className="w-3.5 h-3.5" />
+                        <span>Add Card Row</span>
                       </button>
                     </div>
                   </div>
@@ -450,14 +481,22 @@ export default function CreateFlashcard() {
               </FieldArray>
             </div>
 
-            {/* 3. Form Submit Button Bar */}
-            <div className="flex items-center justify-center pt-2">
+            {/* Form Action Controls */}
+            <div className="flex items-center justify-end gap-4 pt-4 border-t border-hairline">
+              <button
+                type="button"
+                onClick={() => resetForm()}
+                className="btn-secondary-white text-xs"
+              >
+                Reset Form
+              </button>
+              
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-apple-primary px-8 py-3 text-base shadow-sm font-semibold min-w-[200px]"
+                className="btn-primary min-w-[180px] text-xs py-2.5 shadow-sm"
               >
-                {isSubmitting ? 'Creating Deck...' : 'Create Flashcard'}
+                {isSubmitting ? 'SAVING DECK...' : 'CREATE FLASHCARD DECK'}
               </button>
             </div>
           </Form>
@@ -466,3 +505,4 @@ export default function CreateFlashcard() {
     </div>
   )
 }
+

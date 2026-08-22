@@ -1,29 +1,34 @@
-/* Apple Design System - Utility & Micro-interaction Animations */
+/* Custom animations and helper utilities */
 
-@keyframes appleFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 0.8;
   }
-  to {
+  50% {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.apple-fade-in {
-  animation: appleFadeIn 0.28s cubic-bezier(0.28, 0, 0.22, 1) forwards;
+.glow-subtle {
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* Translucent Frosted Glass */
-.apple-glass {
-  background-color: rgba(255, 255, 255, 0.82);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.apple-dark-glass {
-  background-color: rgba(29, 29, 31, 0.82);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
