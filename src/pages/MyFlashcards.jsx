@@ -87,8 +87,8 @@ export default function MyFlashcards() {
           </div>
 
           {/* Key Metrics Cluster */}
-          <div className="flex items-center gap-3">
-            <div className="bg-surface-dark-soft border border-hairline-dark p-3.5 rounded-sm min-w-[110px]">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="bg-surface-dark-soft border border-hairline-dark p-3 rounded-sm flex-1 sm:flex-initial sm:min-w-[110px]">
               <span className="block font-mono text-[10px] uppercase tracking-wider text-ink-light mb-1">
                 Decks
               </span>
@@ -97,7 +97,7 @@ export default function MyFlashcards() {
               </span>
             </div>
 
-            <div className="bg-brand-mint p-3.5 rounded-sm min-w-[110px] border border-[#a8edf2]">
+            <div className="bg-brand-mint p-3 rounded-sm flex-1 sm:flex-initial sm:min-w-[110px] border border-[#a8edf2]">
               <span className="block font-mono text-[10px] uppercase tracking-wider text-ink font-semibold mb-1">
                 Cards
               </span>
@@ -140,7 +140,7 @@ export default function MyFlashcards() {
         </div>
 
         {/* Create Deck CTA */}
-        <Link to="/" className="btn-primary self-start sm:self-auto">
+        <Link to="/" className="btn-primary w-full sm:w-auto justify-center">
           <FiPlus className="w-3.5 h-3.5" />
           <span>New Flashcard Deck</span>
         </Link>
@@ -205,39 +205,49 @@ export default function MyFlashcards() {
             return (
               <div
                 key={deck.id}
-                className="card-surface flex flex-col justify-between hover:border-ink transition-colors duration-150 group"
+                className="card-surface flex flex-col justify-between hover:border-ink transition-colors duration-150 group max-w-[500px] mx-auto w-full md:max-w-none"
               >
                 <div>
                   {/* Deck Header Image or Pattern Banner */}
-                  {deck.groupImage ? (
-                    <div className="h-36 w-full overflow-hidden bg-canvas-dark relative border-b border-hairline">
-                      <img
-                        src={deck.groupImage}
-                        alt={deck.groupName}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
-                      <span className="absolute top-2.5 right-2.5 badge-mono bg-canvas text-ink font-semibold shadow-sm">
-                        {String(termCount).padStart(2, '0')} CARDS
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="h-24 w-full bg-surface-dark p-4 flex items-center justify-between border-b border-hairline-dark relative overflow-hidden">
-                      <div className="w-9 h-9 rounded-sm bg-surface-dark-soft border border-hairline-dark flex items-center justify-center text-white">
-                        <TbCards className="w-5 h-5 text-brand-mint" />
+                  <Link
+                    to={`/flashcard/${deck.id}`}
+                    className="block focus:outline-none overflow-hidden"
+                  >
+                    {deck.groupImage ? (
+                      <div className="h-36 w-full overflow-hidden bg-canvas-dark relative border-b border-hairline">
+                        <img
+                          src={deck.groupImage}
+                          alt={deck.groupName}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+                        <span className="absolute top-2.5 right-2.5 badge-mono bg-canvas text-ink font-semibold shadow-sm">
+                          {String(termCount).padStart(2, '0')} CARDS
+                        </span>
                       </div>
-                      <span className="badge-mono badge-mint">
-                        {String(termCount).padStart(2, '0')} CARDS
-                      </span>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="h-36 w-full bg-surface-dark p-5 flex items-center justify-between border-b border-hairline-dark relative overflow-hidden">
+                        <div className="w-10 h-10 rounded-sm bg-surface-dark-soft border border-hairline-dark flex items-center justify-center text-white">
+                          <TbCards className="w-5 h-5 text-brand-mint" />
+                        </div>
+                        <span className="absolute top-2.5 right-2.5 badge-mono badge-mint">
+                          {String(termCount).padStart(2, '0')} CARDS
+                        </span>
+                      </div>
+                    )}
+                  </Link>
 
                   {/* Deck Card Content */}
                   <div className="p-5 space-y-2">
                     <h3
-                      className="font-sans text-base font-medium text-ink line-clamp-1 group-hover:text-ink transition-colors"
+                      className="font-sans text-base font-medium text-ink line-clamp-1 transition-colors"
                       title={deck.groupName}
                     >
-                      {deck.groupName}
+                      <Link
+                        to={`/flashcard/${deck.id}`}
+                        className="hover:underline text-ink"
+                      >
+                        {deck.groupName}
+                      </Link>
                     </h3>
 
                     <p

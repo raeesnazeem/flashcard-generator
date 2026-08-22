@@ -144,7 +144,7 @@ export default function FlashcardDetails() {
           <span className="badge-mono">ACTIVE DECK</span>
         </div>
 
-        <div className="card-surface p-6 sm:p-8 relative overflow-hidden">
+        <div className="card-surface p-4 sm:p-8 relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 relative z-10">
             <div className="space-y-3 flex-1">
               <div className="flex flex-wrap items-center gap-2">
@@ -242,7 +242,7 @@ export default function FlashcardDetails() {
         {/* Center Column: Interactive Flashcard Carousel Viewer */}
         <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
           {activeTerm ? (
-            <div className="card-surface p-6 sm:p-8 gradient-border-top space-y-6 min-h-[440px] flex flex-col justify-between shadow-soft-drop animate-fade-in relative">
+            <div className="card-surface p-4 sm:p-8 gradient-border-top space-y-6 min-h-[400px] sm:min-h-[440px] flex flex-col justify-between shadow-soft-drop animate-fade-in relative">
               {/* Card Meta Top */}
               <div>
                 <div className="flex items-center justify-between border-b border-hairline pb-3 mb-6">
@@ -303,7 +303,7 @@ export default function FlashcardDetails() {
                     type="button"
                     onClick={handlePrevTerm}
                     disabled={terms.length <= 1}
-                    className="btn-secondary-white text-xs px-3.5 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="btn-secondary-white text-xs px-2.5 sm:px-3.5 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Previous Card (Left Arrow)"
                   >
                     <FiChevronLeft className="w-3.5 h-3.5" />
@@ -318,7 +318,7 @@ export default function FlashcardDetails() {
                     type="button"
                     onClick={handleNextTerm}
                     disabled={terms.length <= 1}
-                    className="btn-primary text-xs px-3.5 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="btn-primary text-xs px-2.5 sm:px-3.5 py-2 disabled:opacity-30 disabled:cursor-not-allowed"
                     title="Next Card (Right Arrow)"
                   >
                     <span>Next</span>

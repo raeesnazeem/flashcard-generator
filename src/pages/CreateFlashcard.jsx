@@ -169,79 +169,113 @@ export default function CreateFlashcard() {
         {({ values, errors, touched, setFieldValue, isSubmitting }) => (
           <Form className="space-y-8" autoComplete="off">
             {/* Section 1: Main Group Information Card */}
-            <div className="card-surface p-6 sm:p-8 space-y-6">
+            <div className="card-surface p-4 sm:p-8 space-y-6">
               <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div>
                   <h2 className="font-mono text-xs uppercase tracking-widest text-ink font-semibold">
                     Group Details
                   </h2>
                   <p className="text-xs text-ink-muted mt-0.5">
-                    Define primary metadata and optional deck cover.
+                    Define group data and optional deck cover.
                   </p>
                 </div>
                 <span className="badge-mono">STEP 1</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-                {/* Group Title Field */}
-                <div className="md:col-span-2 space-y-2">
-                  <label
-                    htmlFor="groupName"
-                    className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
-                  >
-                    Group Name <span className="text-brand-orange">*</span>
-                  </label>
-                  <Field
-                    id="groupName"
-                    name="groupName"
-                    type="text"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                    placeholder="e.g. Distributed Systems Architecture"
-                    className={`input-field font-sans ${
-                      touched.groupName && errors.groupName
-                        ? 'border-red-500 focus:border-red-500'
-                        : ''
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="groupName"
-                    component="div"
-                    className="font-mono text-[11px] text-red-600 mt-1"
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                {/* Left 2 Columns: Group Name + Group Description */}
+                <div className="md:col-span-2 space-y-4">
+                  {/* Group Title Field */}
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="groupName"
+                      className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
+                    >
+                      Group Name <span className="text-brand-orange">*</span>
+                    </label>
+                    <Field
+                      id="groupName"
+                      name="groupName"
+                      type="text"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                      placeholder="e.g. Distributed Systems Architecture"
+                      className={`input-field font-sans ${
+                        touched.groupName && errors.groupName
+                          ? 'border-red-500 focus:border-red-500'
+                          : ''
+                      }`}
+                    />
+                    <ErrorMessage
+                      name="groupName"
+                      component="div"
+                      className="font-mono text-[11px] text-red-600 mt-1"
+                    />
+                  </div>
+
+                  {/* Group Description Field */}
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="groupDescription"
+                      className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
+                    >
+                      Group Description <span className="text-brand-orange">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      id="groupDescription"
+                      name="groupDescription"
+                      rows="3"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                      placeholder="Describe the topics and key knowledge areas covered in this deck..."
+                      className={`input-field font-sans resize-none ${
+                        touched.groupDescription && errors.groupDescription
+                          ? 'border-red-500 focus:border-red-500'
+                          : ''
+                      }`}
+                    />
+                    <ErrorMessage
+                      name="groupDescription"
+                      component="div"
+                      className="font-mono text-[11px] text-red-600 mt-1"
+                    />
+                  </div>
                 </div>
 
-                {/* Group Cover Image Upload */}
-                <div className="space-y-2">
+                {/* Right Column: Deck Cover Image Upload */}
+                <div className="md:col-span-1 flex flex-col space-y-1.5">
                   <label className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium">
                     Deck Cover <span className="text-ink-light lowercase font-normal">(optional)</span>
                   </label>
 
                   {values.groupImage ? (
-                    <div className="relative group inline-block w-full">
+                    <div className="relative group w-full flex-1 min-h-[148px]">
                       <img
                         src={values.groupImage}
                         alt="Group cover"
-                        className="w-full h-24 object-cover rounded-sm border border-hairline"
+                        className="w-full h-full min-h-[148px] max-h-[180px] object-cover rounded-sm border border-hairline"
                       />
                       <button
                         type="button"
                         onClick={() => setFieldValue('groupImage', null)}
-                        className="absolute top-1.5 right-1.5 bg-ink text-white p-1 rounded-xs hover:bg-red-600 transition-colors"
+                        className="absolute top-2 right-2 bg-ink text-white p-1 rounded-xs hover:bg-red-600 transition-colors shadow-sm"
                         title="Remove Image"
                       >
                         <FiX className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center h-24 px-4 border border-dashed border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas-soft hover:bg-canvas transition-colors">
-                      <FiUpload className="w-4 h-4 text-ink-muted mb-1" />
-                      <span className="font-mono text-[11px] uppercase tracking-wider text-ink">
+                    <label className="flex flex-col items-center justify-center flex-1 min-h-[148px] px-4 border border-dashed border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas-soft hover:bg-canvas transition-colors">
+                      <FiUpload className="w-5 h-5 text-ink-muted mb-2" />
+                      <span className="font-mono text-[11px] uppercase tracking-wider text-ink font-medium">
                         Upload Image
                       </span>
-                      <span className="font-mono text-[10px] text-ink-light mt-0.5">MAX 1.5MB</span>
+                      <span className="font-mono text-[10px] text-ink-light mt-1">MAX 1.5MB</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -254,42 +288,11 @@ export default function CreateFlashcard() {
                     </label>
                   )}
                 </div>
-
-                {/* Group Description Field */}
-                <div className="md:col-span-3 space-y-2">
-                  <label
-                    htmlFor="groupDescription"
-                    className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium"
-                  >
-                    Group Description <span className="text-brand-orange">*</span>
-                  </label>
-                  <Field
-                    as="textarea"
-                    id="groupDescription"
-                    name="groupDescription"
-                    rows="3"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                    placeholder="Describe the topics and key knowledge areas covered in this deck..."
-                    className={`input-field font-sans resize-none ${
-                      touched.groupDescription && errors.groupDescription
-                        ? 'border-red-500 focus:border-red-500'
-                        : ''
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="groupDescription"
-                    component="div"
-                    className="font-mono text-[11px] text-red-600 mt-1"
-                  />
-                </div>
               </div>
             </div>
 
             {/* Dynamic Cards / Terms Section */}
-            <div className="card-surface p-6 sm:p-8 space-y-6">
+            <div className="card-surface p-4 sm:p-8 space-y-6">
               <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div>
                   <h2 className="font-mono text-xs uppercase tracking-widest text-ink font-semibold">
@@ -372,7 +375,7 @@ export default function CreateFlashcard() {
                               autoCapitalize="off"
                               spellCheck="false"
                               placeholder="e.g. CAP Theorem"
-                              className={`input-field font-sans ${
+                              className={`input-field font-sans h-11 ${
                                 touched.terms?.[index]?.term && errors.terms?.[index]?.term
                                   ? 'border-red-500 focus:border-red-500'
                                   : ''
@@ -393,11 +396,11 @@ export default function CreateFlashcard() {
                             >
                               Definition <span className="text-brand-orange">*</span>
                             </label>
-                            <textarea
+                            <input
+                              type="text"
                               id={`terms.${index}.definition`}
                               name={`terms[${index}].definition`}
                               value={termItem.definition}
-                              rows="2"
                               onChange={(e) =>
                                 setFieldValue(`terms[${index}].definition`, e.target.value)
                               }
@@ -406,7 +409,7 @@ export default function CreateFlashcard() {
                               autoCapitalize="off"
                               spellCheck="false"
                               placeholder="Write definition..."
-                              className={`input-field font-sans resize-none ${
+                              className={`input-field font-sans h-11 ${
                                 touched.terms?.[index]?.definition &&
                                 errors.terms?.[index]?.definition
                                   ? 'border-red-500 focus:border-red-500'
@@ -428,23 +431,28 @@ export default function CreateFlashcard() {
                             </label>
 
                             {termItem.image ? (
-                              <div className="relative group inline-block w-full">
-                                <img
-                                  src={termItem.image}
-                                  alt={`Card ${index + 1}`}
-                                  className="w-full h-14 object-cover rounded-sm border border-hairline"
-                                />
+                              <div className="relative group w-full h-11 border border-hairline rounded-sm overflow-hidden bg-canvas flex items-center justify-between px-2.5">
+                                <div className="flex items-center gap-2 truncate">
+                                  <img
+                                    src={termItem.image}
+                                    alt={`Card ${index + 1}`}
+                                    className="w-7 h-7 object-cover rounded-xs border border-hairline flex-shrink-0"
+                                  />
+                                  <span className="font-mono text-[11px] text-ink truncate">
+                                    Attached
+                                  </span>
+                                </div>
                                 <button
                                   type="button"
                                   onClick={() => setFieldValue(`terms[${index}].image`, null)}
-                                  className="absolute top-1 right-1 bg-ink text-white p-0.5 rounded-xs hover:bg-red-600 transition-colors"
+                                  className="p-1 text-ink-muted hover:text-red-600 rounded-xs hover:bg-red-50 transition-colors flex-shrink-0"
                                   title="Remove image"
                                 >
-                                  <FiX className="w-3 h-3" />
+                                  <FiX className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             ) : (
-                              <label className="flex items-center justify-center gap-2 h-10 px-3 border border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas hover:bg-canvas-soft transition-colors font-mono text-[11px] uppercase tracking-wider text-ink">
+                              <label className="flex items-center justify-center gap-2 h-11 px-3 border border-hairline hover:border-ink rounded-sm cursor-pointer bg-canvas hover:bg-canvas-soft transition-colors font-mono text-[11px] uppercase tracking-wider text-ink w-full">
                                 <FiImage className="w-3.5 h-3.5 text-ink-muted" />
                                 <span>Attach Image</span>
                                 <input
@@ -482,7 +490,7 @@ export default function CreateFlashcard() {
             </div>
 
             {/* Form Action Controls */}
-            <div className="flex items-center justify-end gap-4 pt-4 border-t border-hairline">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-hairline">
               <button
                 type="button"
                 onClick={() => resetForm()}
@@ -494,7 +502,7 @@ export default function CreateFlashcard() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary min-w-[180px] text-xs py-2.5 shadow-sm"
+                className="btn-primary sm:min-w-[180px] text-xs py-2.5 shadow-sm justify-center"
               >
                 {isSubmitting ? 'SAVING DECK...' : 'CREATE FLASHCARD DECK'}
               </button>

@@ -21,7 +21,7 @@ export default function Layout() {
               </span>
               <span className="text-hairline font-mono text-xs">&bull;</span>
               <span className="font-mono text-xs text-ink-muted">
-                Engineered for High-Retention Learning
+                High-Retention Learning
               </span>
             </div>
 
@@ -29,7 +29,7 @@ export default function Layout() {
               <Link to="/" className="hover:text-ink transition-colors">Create</Link>
               <Link to="/my-flashcards" className="hover:text-ink transition-colors">Library</Link>
               <span className="text-hairline">&bull;</span>
-              <span className="text-ink-light">Indexed Local DB</span>
+              <span className="text-ink-light">Local Storage</span>
             </div>
           </div>
 
