@@ -6,8 +6,10 @@ import MyFlashcards from './pages/MyFlashcards'
 import FlashcardDetails from './pages/FlashcardDetails'
 
 export default function App() {
+ 
   return (
     <BrowserRouter>
+      {/* app routes. */}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<CreateFlashcard />} />

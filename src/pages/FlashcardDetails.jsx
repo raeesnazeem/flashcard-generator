@@ -26,35 +26,43 @@ import { TbCards } from 'react-icons/tb'
 import { selectAllFlashcards, deleteFlashcard } from '../redux/flashcardSlice'
 
 export default function FlashcardDetails() {
+  // Gets the selected deck ID, navigation helpers, and all saved decks.
   const { id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const flashcards = useSelector(selectAllFlashcards)
 
+  // Finds the deck that matches the ID in the current URL.
   const deck = flashcards.find((item) => item.id === id)
 
+  // Tracks the selected card and the open/closed state of each notice or modal.
   const [activeTermIndex, setActiveTermIndex] = useState(0)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [copiedToast, setCopiedToast] = useState(false)
 
+  // Uses an empty list when a deck has no terms and selects the current card.
   const terms = deck?.terms || []
   const activeTerm = terms[activeTermIndex] || terms[0]
 
+  // Starts at the first card whenever the user opens a different deck.
   useEffect(() => {
     setActiveTermIndex(0)
   }, [id])
 
+  // Moves to the previous card and wraps to the last card when needed.
   const handlePrevTerm = useCallback(() => {
     if (terms.length <= 1) return
     setActiveTermIndex((prev) => (prev > 0 ? prev - 1 : terms.length - 1))
   }, [terms.length])
 
+  // Moves to the next card and wraps to the first card when needed.
   const handleNextTerm = useCallback(() => {
     if (terms.length <= 1) return
     setActiveTermIndex((prev) => (prev < terms.length - 1 ? prev + 1 : 0))
   }, [terms.length])
 
+  // Adds keyboard controls for changing cards and removes the listener on cleanup.
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return
@@ -72,6 +80,7 @@ export default function FlashcardDetails() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handlePrevTerm, handleNextTerm])
 
+  // Copies the current deck URL and shows temporary confirmation feedback.
   const handleCopyLink = () => {
     const url = window.location.href
     navigator.clipboard.writeText(url).then(() => {
@@ -80,10 +89,12 @@ export default function FlashcardDetails() {
     })
   }
 
+  // Opens the browser print dialog for the deck.
   const handlePrint = () => {
     window.print()
   }
 
+  // Removes the current deck and returns to the library.
   const handleConfirmDelete = () => {
     if (deck) {
       dispatch(deleteFlashcard(deck.id))
@@ -91,6 +102,7 @@ export default function FlashcardDetails() {
     }
   }
 
+  // Shows a not-found message when the URL does not match a saved deck.
   if (!deck) {
     return (
       <div className="space-y-6 max-w-lg mx-auto py-12 text-center no-print">
@@ -117,6 +129,7 @@ export default function FlashcardDetails() {
     )
   }
 
+  // Prepares the values used by the page header and sharing controls.
   const shareUrl = window.location.href
   const shareText = `Check out this flashcard deck: "${deck.groupName}" on Flashcard Platform!`
   const formattedDate = deck.createdAt

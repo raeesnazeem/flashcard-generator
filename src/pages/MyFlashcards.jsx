@@ -18,28 +18,34 @@ import {
 } from '../redux/flashcardSlice'
 
 export default function MyFlashcards() {
+  // Gets the deck list and search value from Redux.
   const dispatch = useDispatch()
   const flashcards = useSelector(selectAllFlashcards)
   const reduxSearchTerm = useSelector(selectSearchTerm)
 
+  // Keeps the search text and the deck selected for deletion in local state.
   const [query, setQuery] = useState(reduxSearchTerm || '')
   const [deckToDelete, setDeckToDelete] = useState(null)
 
+  // Updates the local search field and the saved Redux search value together.
   const handleSearchChange = (e) => {
     const value = e.target.value
     setQuery(value)
     dispatch(setSearchTerm(value))
   }
 
+  // Clears the current search text from the page and Redux.
   const clearSearch = () => {
     setQuery('')
     dispatch(setSearchTerm(''))
   }
 
+  // Counts all cards across every deck for the cards metric.
   const totalTermsCount = useMemo(() => {
     return flashcards.reduce((acc, deck) => acc + (deck.terms?.length || 0), 0)
   }, [flashcards])
 
+  // Filters decks by name, description, term, or definition when a search is active.
   const filteredDecks = useMemo(() => {
     if (!query.trim()) return flashcards
 
@@ -56,6 +62,7 @@ export default function MyFlashcards() {
     })
   }, [flashcards, query])
 
+  // Deletes the selected deck after the user confirms the action.
   const handleConfirmDelete = () => {
     if (deckToDelete) {
       dispatch(deleteFlashcard(deckToDelete.id))
@@ -63,9 +70,10 @@ export default function MyFlashcards() {
     }
   }
 
+  // Renders the library page with metrics, search, deck cards, and the delete modal.
   return (
     <div className="space-y-8 pb-16">
-      {/* Dark Hero & Metric Ribbon */}
+      {/* Shows the library title and the total deck/card counts. */}
       <div className="card-dark p-6 sm:p-8 relative overflow-hidden">
         {/* Subtle decorative background gradient accent */}
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-gradient-to-br from-brand-orange/10 via-brand-magenta/10 to-brand-periwinkle/10 blur-3xl pointer-events-none" />
@@ -86,7 +94,7 @@ export default function MyFlashcards() {
             </p>
           </div>
 
-          {/* Key Metrics Cluster */}
+          {/* Key Metrics Info */}
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="bg-surface-dark-soft border border-hairline-dark p-3 rounded-sm flex-1 sm:flex-initial sm:min-w-[110px]">
               <span className="block font-mono text-[10px] uppercase tracking-wider text-ink-light mb-1">
@@ -109,7 +117,7 @@ export default function MyFlashcards() {
         </div>
       </div>
 
-      {/* Search & Create Action Bar */}
+      {/* Lets the user search existing decks or start a new one. */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline pb-4">
         {/* Search Input */}
         <div className="relative max-w-md w-full">
@@ -146,7 +154,7 @@ export default function MyFlashcards() {
         </Link>
       </div>
 
-      {/* Empty State */}
+      {/* Shows either the empty state, no-results state, or the deck grid. */}
       {flashcards.length === 0 ? (
         <div className="card-surface p-12 text-center max-w-md mx-auto space-y-4 my-8">
           <div className="w-12 h-12 rounded-sm bg-canvas-dark flex items-center justify-center mx-auto text-white">
@@ -291,7 +299,7 @@ export default function MyFlashcards() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Confirms deletion before removing a deck from Redux. */}
       {deckToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
           <div className="card-surface max-w-md w-full p-6 space-y-5 border border-hairline shadow-soft-drop">

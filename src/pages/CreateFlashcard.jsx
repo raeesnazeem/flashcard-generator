@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fi'
 import { addFlashcard } from '../redux/flashcardSlice'
 
+// Validates the deck name, description, and each flashcard before the form can be submitted.
 const FlashcardValidationSchema = Yup.object().shape({
   groupName: Yup.string()
     .trim()
@@ -46,6 +47,7 @@ const FlashcardValidationSchema = Yup.object().shape({
     .min(1, 'At least one flashcard term is required')
 })
 
+  // Creates a blank flashcard with a unique ID for the form's initial or newly added row.
 const createInitialTerm = () => ({
   id: `term-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
   term: '',
@@ -53,6 +55,7 @@ const createInitialTerm = () => ({
   image: null
 })
 
+// Provides the default values for a new deck, including one blank flashcard to start with.
 const initialFormValues = {
   groupName: '',
   groupDescription: '',
@@ -61,13 +64,18 @@ const initialFormValues = {
 }
 
 export default function CreateFlashcard() {
+  // Gets the Redux dispatch function and the navigation function used after saving.
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  // Stores whether the save confirmation and an image upload error should be shown.
   const [successToast, setSuccessToast] = useState(false)
   const [imageError, setImageError] = useState(null)
 
+  // Keeps references to term inputs so an edit button can focus the matching input.
   const termTitleRefs = useRef([])
 
+  // Checks an uploaded image, converts valid files into data URLs, and reports errors.
   const handleImageFile = (file, callback) => {
     setImageError(null)
     if (!file) return
@@ -88,7 +96,9 @@ export default function CreateFlashcard() {
     reader.readAsDataURL(file)
   }
 
+  // Builds and saves a deck from the submitted form values.
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    // Trims text, keeps optional images as null, and creates IDs for the deck and cards.
     const newDeck = {
       id: `deck-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
       groupName: values.groupName.trim(),
@@ -103,6 +113,7 @@ export default function CreateFlashcard() {
       }))
     }
 
+    // Saves the deck, clears the form, shows confirmation, and then opens the library.
     dispatch(addFlashcard(newDeck))
     setSubmitting(false)
     resetForm()
@@ -113,9 +124,10 @@ export default function CreateFlashcard() {
     }, 1100)
   }
 
+  // Renders the complete deck creation page.
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
-      {/* Header */}
+      {/* Header: identifies the page and explains what the user can create. */}
       <div className="border-b border-hairline pb-6">
         <div className="flex items-center gap-2 mb-2">
           <span className="badge-mono">01 // CREATION</span>
@@ -131,7 +143,7 @@ export default function CreateFlashcard() {
         </p>
       </div>
 
-      {/* Success Notification */}
+      {/* Success notification: appears after a deck is saved. */}
       {successToast && (
         <div className="fixed top-20 right-6 z-50 flex items-center gap-3 bg-canvas border border-ink text-ink px-4 py-3 rounded-sm shadow-soft-drop animate-fade-in">
           <div className="w-5 h-5 rounded-xs bg-brand-mint flex items-center justify-center text-ink flex-shrink-0">
@@ -146,7 +158,7 @@ export default function CreateFlashcard() {
         </div>
       )}
 
-      {/* Global Image Error Warning */}
+      {/* Image warning: lets the user see and dismiss upload errors. */}
       {imageError && (
         <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 text-red-700 rounded-sm text-xs font-mono">
           <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -166,9 +178,10 @@ export default function CreateFlashcard() {
         validationSchema={FlashcardValidationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, setFieldValue, isSubmitting }) => (
+        {/* Formik supplies form values, validation state, field updates, and reset behavior. */}
+        {({ values, errors, touched, setFieldValue, isSubmitting, resetForm }) => (
           <Form className="space-y-8" autoComplete="off">
-            {/* Section 1: Main Group Information Card */}
+            {/* Group details: collects the deck name, description, and optional cover image. */}
             <div className="card-surface p-4 sm:p-8 space-y-6">
               <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div>
@@ -291,7 +304,7 @@ export default function CreateFlashcard() {
               </div>
             </div>
 
-            {/* Dynamic Cards / Terms Section */}
+            {/* Cards section: manages the list of flashcards with FieldArray. */}
             <div className="card-surface p-4 sm:p-8 space-y-6">
               <div className="flex items-center justify-between border-b border-hairline pb-4">
                 <div>
@@ -309,13 +322,14 @@ export default function CreateFlashcard() {
 
               <FieldArray name="terms">
                 {({ push, remove }) => (
+                  /* Each row contains editable card data and controls for adding or removing cards. */
                   <div className="space-y-4">
                     {values.terms.map((termItem, index) => (
                       <div
                         key={termItem.id || index}
                         className="p-4 sm:p-5 rounded-sm bg-canvas-soft border border-hairline space-y-4 transition-all"
                       >
-                        {/* Term Header Row */}
+                        {/* Card header: shows the card number and focus/delete controls. */}
                         <div className="flex items-center justify-between border-b border-hairline/60 pb-3">
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-xs bg-ink text-white">
@@ -351,7 +365,7 @@ export default function CreateFlashcard() {
                           </div>
                         </div>
 
-                        {/* Card Inputs Grid */}
+                        {/* Card fields: collects the term, definition, and optional image. */}
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                           {/* Term Field */}
                           <div className="md:col-span-4 space-y-1.5">
@@ -424,7 +438,7 @@ export default function CreateFlashcard() {
                               )}
                           </div>
 
-                          {/* Optional Card Image Upload */}
+                          {/* Optional card image: previews an attached image or offers an upload control. */}
                           <div className="md:col-span-3 space-y-1.5">
                             <label className="block font-mono text-[11px] uppercase tracking-wider text-ink font-medium">
                               Image <span className="text-ink-light lowercase font-normal">(optional)</span>
@@ -473,7 +487,7 @@ export default function CreateFlashcard() {
                       </div>
                     ))}
 
-                    {/* Add More Cards Button */}
+                    {/* Add card control: appends a new blank card to the FieldArray. */}
                     <div className="pt-2">
                       <button
                         type="button"
@@ -489,7 +503,7 @@ export default function CreateFlashcard() {
               </FieldArray>
             </div>
 
-            {/* Form Action Controls */}
+            {/* Form actions: resets the fields or submits the completed deck. */}
             <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-hairline">
               <button
                 type="button"

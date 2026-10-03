@@ -3,10 +3,12 @@ import { Outlet, Link } from 'react-router-dom'
 import Navbar from './Navbar'
 
 export default function Layout() {
+  // Provides the shared page shell with navigation, page content, and a footer.
   return (
     <div className="min-h-screen bg-canvas text-ink flex flex-col font-sans selection:bg-brand-mint selection:text-ink">
       <Navbar />
-      
+
+      {/* Renders the page selected by the current route. */}
       <main className="flex-1 max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <Outlet />
       </main>
